@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -39,8 +40,19 @@ public class WebSecurityConfig {
     }
 
 
+    @Bean
     SecurityFilterChain chain(HttpSecurity http ) throws Exception {
         http
+                .authorizeHttpRequests((authorizeRequests) -> {
+                    authorizeRequests
+                            .requestMatchers(HttpMethod.GET, "/registration").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/registration").permitAll()
+                            .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                            .anyRequest().authenticated();
+                })
+
+
+
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session ->

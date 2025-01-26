@@ -22,23 +22,20 @@ public class RegistrationService {
     public String registerUser(RegistrationDto registrationDto) {
 
         if (userRepository.findByUsername(registrationDto.getUsername()).isPresent()) {
-            return "Username is already in use";
+            throw new IllegalArgumentException("Username is already in use");
         }
-        if (registrationDto.getPassword().equals(registrationDto.getConfirmPassword())) {
-            UserEntity userEntity = new UserEntity();
-            userEntity.setName(registrationDto.getName());
-            userEntity.setSurname(registrationDto.getSurname());
-            userEntity.setEmail(registrationDto.getEmail());
-            String encodedPassword = new BCryptPasswordEncoder().encode(registrationDto.getPassword());
-            userEntity.setPassword(encodedPassword);
-            userRepository.save(userEntity);
-        }else {
-            return "Passwords do not match";
+        if (!registrationDto.getPassword().equals(registrationDto.getConfirmPassword())) {
+            throw new IllegalArgumentException("Passwords do not match");
         }
+        UserEntity userEntity = new UserEntity();
+        userEntity.setName(registrationDto.getName());
+        userEntity.setSurname(registrationDto.getSurname());
+        userEntity.setEmail(registrationDto.getEmail());
+        userEntity.setUsername(registrationDto.getUsername());
+        String encodedPassword = new BCryptPasswordEncoder().encode(registrationDto.getPassword());
+        userEntity.setPassword(encodedPassword);
+        userRepository.save(userEntity);
 
         return "Registration Successful";
     }
-
-
-
 }
