@@ -5,6 +5,8 @@ import com.book_library.book_library.models.Product;
 import com.book_library.book_library.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProductService {
 
@@ -20,5 +22,10 @@ public class ProductService {
             throw new IllegalArgumentException("Product already exists");
         }
         return productRepository.save(product);
+    }
+
+
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 }
