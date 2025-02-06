@@ -18,6 +18,13 @@
             <td th:text="${product.productName}"></td>
             <td th:text="${product.price}"></td>
             <td th:text="${product.quantity}"></td>
+
+            <td>
+                <form th:action="@{/favorites/add}" method="post">
+                    <input type="hidden" name="product_id" th:value="${product.id}"/>
+                    <button type="submit">Add to favorites</button>
+                </form>
+            </td>
         </tr>
     </table>
 </body>
