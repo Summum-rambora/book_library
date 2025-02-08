@@ -1,5 +1,6 @@
 package com.book_library.book_library.repositories;
 
+import com.book_library.book_library.dto.UserEntityDto;
 import com.book_library.book_library.models.Favorites;
 import com.book_library.book_library.models.Product;
 import com.book_library.book_library.models.UserEntity;

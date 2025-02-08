@@ -33,7 +33,7 @@ public class ProductController {
     @GetMapping("/Products")
     public String showProducts(Model model) {
         model.addAttribute("products", productService.getAllProducts());
-        return "Products";
+        return "products";
     }
 
 

@@ -10,11 +10,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class UserEntityDto {
+    private int id;
+
     private String username;
     private String password;
 
     public UserEntityDto(UserEntity userEntity) {
         this.username = userEntity.getUsername();
         this.password = userEntity.getPassword();
+        this.id = userEntity.getId();
     }
 }

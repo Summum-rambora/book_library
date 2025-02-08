@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Favorites</title>
+</head>
+<body>
+<ul>
+  <li th:each="product : ${favorites}" >
+      <strong th:text="${product.getProductName}"></strong>
+      <span th:text="${product.price}"></span>
+      <span th:text="${product.quantity}"></span>
+  </li>
+</ul>
+</body>
+</html>
