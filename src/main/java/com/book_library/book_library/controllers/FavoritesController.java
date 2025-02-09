@@ -50,6 +50,19 @@ public class FavoritesController {
         return "redirect:/Products";
     }
 
+    @PostMapping("/favorites/remove")
+    public String removeFavorite(@RequestParam("product_id") int product_id, Principal principal) {
+        Optional<UserEntity> userEntity = userEntityService.FindUserByUsername(principal.getName());
+        Product product = productService.getProductById(product_id);
+
+        if (userEntity.isPresent()) {
+            UserEntity user = userEntity.get();
+            favoritesService.DeleteFavorite(user , product);
+        }
+
+        return "redirect:/favorites";
+    }
+
 
     @GetMapping("/favorites")
     public String ShowFavoritesPage(Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails) {

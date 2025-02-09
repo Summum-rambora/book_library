@@ -10,6 +10,10 @@
       <strong th:text="${product.getProductName}"></strong>
       <span th:text="${product.price}"></span>
       <span th:text="${product.quantity}"></span>
+      <form th:action="@{/favorites/remove}" method="post">
+        <input type="hidden" name="product_id" th:value="${product.id}">
+          <button type="submit">Remove from favorites</button>
+      </form>
   </li>
 </ul>
 </body>

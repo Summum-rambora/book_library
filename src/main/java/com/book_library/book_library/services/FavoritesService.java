@@ -8,7 +8,9 @@ import com.book_library.book_library.models.UserEntity;
 import com.book_library.book_library.repositories.FavoriteRepository;
 import com.book_library.book_library.repositories.ProductRepository;
 import com.book_library.book_library.repositories.UserEntityRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,6 +41,8 @@ public class FavoritesService{
         favoriteRepository.save(new Favorites(persistentUser, product));
     }
 
+    @Modifying
+    @Transactional
     public void DeleteFavorite(UserEntity userEntity, Product product) {
         favoriteRepository.deleteFavoritesByUserEntityAndProduct(userEntity, product);
     }
