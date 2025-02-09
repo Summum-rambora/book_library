@@ -22,4 +22,9 @@ public class Cart {
     @ManyToOne
     @JoinColumn(name = "product_id")
     private Product product;
+
+    public Cart(UserEntity userEntity, Product product) {
+        this.userEntity = userEntity;
+        this.product = product;
+    }
 }

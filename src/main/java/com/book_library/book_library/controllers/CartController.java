@@ -1,19 +1,18 @@
 package com.book_library.book_library.controllers;
 
-
 import com.book_library.book_library.dto.UserEntityDto;
-import com.book_library.book_library.mappers.UserEntityMapper;
-import com.book_library.book_library.models.Favorites;
+import com.book_library.book_library.models.Cart;
 import com.book_library.book_library.models.Product;
 import com.book_library.book_library.models.UserEntity;
 import com.book_library.book_library.security.userDetails.CustomUserDetails;
-import com.book_library.book_library.services.FavoritesService;
+import com.book_library.book_library.services.CartService;
 import com.book_library.book_library.services.ProductService;
 import com.book_library.book_library.services.UserEntityService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -22,62 +21,58 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class FavoritesController {
-
-    private static FavoritesService favoritesService;
+public class CartController {
+    private static CartService cartService;
     private static ProductService productService;
     private static UserEntityService userEntityService;
 
-
-
-    public FavoritesController(FavoritesService favoritesService, ProductService productService,
-                               UserEntityService userEntityService) {
-        this.favoritesService = favoritesService;
+    public CartController (CartService cartService, ProductService productService,
+                                      UserEntityService userEntityService) {
+        this.cartService = cartService;
         this.productService = productService;
         this.userEntityService = userEntityService;
     }
 
-    @PostMapping("/favorites/add")
-    public String addFavorite(@RequestParam("product_id") int product_id, Principal principal ) {
+
+
+    @PostMapping("/cart/add")
+    public String addCart(@RequestParam("product_id") int product_id, Principal principal, Model model) {
         Optional<UserEntity> userEntity = userEntityService.FindUserByUsername(principal.getName());
         Product product = productService.getProductById(product_id);
 
         if (userEntity.isPresent()) {
             UserEntity user = userEntity.get();
-            favoritesService.AddFavorite(user , product);
+            cartService.addToCart(user, product);
         }
 
-        return "redirect:/products";
+        return "redirect:/Products";
     }
 
-    @PostMapping("/favorites/remove")
-    public String removeFavorite(@RequestParam("product_id") int product_id, Principal principal) {
+    @PostMapping("/cart/remove")
+    public String removeCart(@RequestParam("product_id") int product_id, Principal principal) {
         Optional<UserEntity> userEntity = userEntityService.FindUserByUsername(principal.getName());
         Product product = productService.getProductById(product_id);
 
         if (userEntity.isPresent()) {
             UserEntity user = userEntity.get();
-            favoritesService.DeleteFavorite(user , product);
+            cartService.removeFromCart(user, product);
         }
-
-        return "redirect:/favorites";
+        return "redirect:/cart";
     }
 
+    @GetMapping("/cart")
+    public String showCart(Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        UserEntityDto userEntityDto = customUserDetails.userEntityDto();
 
-    @GetMapping("/favorites")
-    public String ShowFavoritesPage(Model model, @AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        UserEntityDto userEntity = customUserDetails.userEntityDto();
+        List<Cart> cart = cartService.getAllCarts(userEntityDto);
+        List<Product> cartProducts = cart.stream()
+                .map(Cart :: getProduct)
+                .toList();
 
-        List<Favorites> favorites = favoritesService.findAllFavoritesByUserEntity(userEntity);
+        model.addAttribute("cart", cartProducts);
+        model.addAttribute("userEntityDto", userEntityDto);
 
-        List<Product> favoriteProducts = favorites.stream()
-                        .map(Favorites :: getProduct)
-                                .toList();
-
-        model.addAttribute("favorites", favoriteProducts);
-        model.addAttribute("userEntityDto", userEntity);
-
-        return "favorites";
+        return "cart";
     }
 
 }

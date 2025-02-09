@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+</head>
+<body>
+
+<ul>
+    <li th:each="product : ${cart}">
+        <strong th:text="${product.getProductName}"></strong>
+        <span th:text="${product.price}"></span>
+        <span th:text="${product.quantity}"></span>
+        <form th:action="@{/cart/remove}" method="post">
+            <input type="hidden" name="product_id" th:value="${product.id}">
+            <button type="submit">Remove from cart</button>
+        </form>
+    </li>
+
+</ul>
+
+</body>
+</html>
